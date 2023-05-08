@@ -1,0 +1,28 @@
+name: Save DNS Status 3
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  save-dns-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # impostiamo un timeout di 6 ore
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Loop for 6 hours
+      run: |
+        for i in {1..720}; do
+          date >> dns_status.txt
+          nslookup lucazani.com >> dns_status.txt
+          sleep 30
+        done
+        
+    - name: Save DNS status file
+      uses: actions/upload-artifact@v2
+      with:
+        name: DNS status
+        path: dns_status3.txt
